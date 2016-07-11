@@ -1,0 +1,1 @@
+En este folder se almacenarán temporalmente los archivos que se suban al servidor.

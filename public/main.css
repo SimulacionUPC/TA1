@@ -1,0 +1,11 @@
+.ui-select-element .btn-default {
+  background: #FFF;
+}
+.message {
+  position: fixed;
+  width: 40%;
+  right: 0;
+  top: 50px;
+  margin: 5px;
+  z-index: 9999;
+}
