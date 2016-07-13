@@ -33,7 +33,7 @@
                                 <div class="col-sm-10">
                                     <input type="number"
                                             class="form-control"
-                                            ng-model="generador.semilla"/>
+                                            ng-model="generador.xo"/>
                                 </div>
                             </div>
                         </div>
@@ -44,8 +44,7 @@
                                 <div class="col-sm-10">
                                     <input type="number"
                                             class="form-control"
-                                            ng-model="generador.d"
-                                            ng-model="generador.semilla"/>
+                                            ng-model="generador.d"/>
                                 </div>
                             </div>
                         </div>
@@ -56,8 +55,7 @@
                                 <div class="col-sm-10">
                                     <input type="number"
                                             class="form-control"
-                                            ng-model="generador.a"
-                                            ng-model="generador.semilla"/>
+                                            ng-model="generador.a"/>
                                 </div>
                             </div>
                         </div>
@@ -68,8 +66,7 @@
                                 <div class="col-sm-10">
                                     <input type="number"
                                             class="form-control"
-                                            ng-model="generador.c"
-                                            ng-model="generador.semilla"/>
+                                            ng-model="generador.c"/>
                                 </div>
                             </div>
                         </div>
@@ -80,8 +77,7 @@
                                 <div class="col-sm-10">
                                     <input type="number"
                                             class="form-control"
-                                            ng-model="generador.m"
-                                            ng-model="generador.semilla"/>
+                                            ng-model="generador.m"/>
                                 </div>
                             </div>
                         </div>
@@ -92,13 +88,98 @@
                                 <div class="col-sm-10">
                                     <input type="number"
                                             class="form-control"
-                                            ng-model="generador.n"
-                                            ng-model="generador.semilla"/>
+                                            ng-model="generador.n"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12"
+                             ng-show="['2'].indexOf(generador.metodo)>-1">
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">Eliminar (Izquierda / Derecha):</label>
+                                <div class="col-sm-10">
+                                    <select class="form-control"
+                                            ng-model="generador.eliminar">
+                                        <option value="1">Izquierda</option>
+                                        <option value="2">Derecha</option>
+                                    </select>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </form>
+                <div ng-show="result.length">
+                    <table class="randomtable"
+                           ng-show="generador.metodo == 2">
+                        <thead>
+                            <tr>
+                                <th>i</th>
+                                <th>Xo</th>
+                                <th>Xi^</th>
+                                <th>Ri</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="item in result">
+                                <td>
+                                    {{item.i + 1}}
+                                </td>
+                                <td>
+                                    {{item.xi}}
+                                </td>
+                                <td>
+                                    {{item.xi2}}
+                                </td>
+                                <td>
+                                    {{item.ri}}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <table class="randomtable"
+                           ng-show="generador.metodo == 1">
+                        <thead>
+                            <tr>
+                                <th>i</th>
+                                <th>Xo</th>
+                                <th>Ax+C</th>
+                                <th>Residuo</th>
+                                <th>Ri</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="item in result">
+                                <td>
+                                    {{item.i + 1}}
+                                </td>
+                                <td>
+                                    {{item.xo}}
+                                </td>
+                                <td>
+                                    {{item.axoc}}
+                                </td>
+                                <td>
+                                    {{item.axocm}}
+                                </td>
+                                <td>
+                                    {{item.axocmm}}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="col-md-10">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">Nombre del set:</label>
+                            <div class="col-sm-10">
+                                <input type="text"
+                                        class="form-control"
+                                        ng-model="generador.nombre"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <button type="submit" class="btn btn-info pull-right" ng-click="guardar()">Guardar</button>
+                    </div>
+                </div>
             </div>
             <div class="box-footer" ng-switch="isLoading">
                 <button type="submit" class="btn btn-info pull-right" ng-click="generar()">Generar</button>

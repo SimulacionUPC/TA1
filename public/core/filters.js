@@ -19,7 +19,7 @@
         if (angular.isArray(items)) {
           keys = Object.keys(props);
 
-          items.forEach(function(item) {
+          items.forEach(function (item) {
             var itemMatches = false,
                 i,
                 prop,

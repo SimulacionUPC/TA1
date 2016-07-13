@@ -36,7 +36,7 @@
     return {
       restrict: 'E',
       templateUrl: 'core/templates/sidebarMenu.html',
-      controller: ['$scope', function ($scope, CurrentUser) {
+      controller: [function () {
       }]
     };
   });
