@@ -7,18 +7,18 @@
           listaCuadradoMedio = [],
           recorte = function (_xi2, izq_der, d) {
             //Obteniendo como texto
-            var txt = _xi2 + "",
-                txt_recortado = angular.copy(txt);
+            var txt = _xi2 + '',
+                txt_recortado = angular.copy(txt),
+                mov = 0,
+                pos_i = 0,
+                pos_d = 0,
+                ii;
 
             //Analizando si es de la derecha o izquierda
             if (izq_der == 1) { //Izquierda
               //Realizando el recorte comenzando por la ixquierda
               //Verificando que la longitud del valor sea igual a "d"
-              var mov = 0,
-                  pos_i = 0,
-                  pos_d = 0;
-
-              for (var ii = 0; ii < txt.length; ii++) {
+              for (ii = 0; ii < txt.length; ii++) {
                 //Analizando la longitud actual si es igual a "d"
                 if (txt_recortado.length > d) {
                   if (mov == 0) {
@@ -40,11 +40,7 @@
             } else if (izq_der == 2) { //Derecha
               //Realizando el recorte comenzando por la ixquierda
               //Verificando que la longitud del valor sea igual a "d"
-              var mov = 0,
-                  pos_i = 0,
-                  pos_d = 0;
-
-              for (var ii = 0; ii < txt.length; ii++) {
+              for (ii = 0; ii < txt.length; ii++) {
                 //Analizando la longitud actual si es igual a "d"
                 if (txt_recortado.length > d) {
                   if (mov == 0) {
@@ -107,47 +103,47 @@
         //Tomando el primer número
         listaCuadradoMedio = [];
         var _row_ini = {},
-            pow = Math.pow(10, $scope.generador.d);
-
-        //Generando los números aleatorios
-        var _i = 0;
+            pow = Math.pow(10, $scope.generador.d),
+            //Generando los números aleatorios
+            _i = 0;
 
         while (listaCuadradoMedio.length < $scope.generador.n) {
-          var _row = {};
-
-          var _i_aux = _i,
+          var _row = {},
+              _i_aux = _i,
               _xi_aux = _i ? listaCuadradoMedio[_i-1].xi2medio : $scope.generador.xo,
               _xi2_aux = _xi_aux * _xi_aux,
-              _xi2medio_aux = 0; //calcular recortando la izquierda y la derecha
+              _xi2medio_aux = 0, //calcular recortando la izquierda y la derecha
+              _d_xi2medio_aux,
+              _ri_aux;
 
           _xi2medio_aux = parseInt(recorte(_xi2_aux, $scope.generador.eliminar, $scope.generador.d), 0) || 0;
 
-          var _d_xi2medio_aux = _xi2medio_aux,
-              _ri_aux = (_d_xi2medio_aux / pow);
+          _d_xi2medio_aux = _xi2medio_aux,
+          _ri_aux = (_d_xi2medio_aux / pow);
 
-            _row.i = _i_aux;
-            _row.xi = _xi_aux;
-            _row.xi2 = _xi2_aux;
-            _row.xi2medio = _xi2medio_aux;
-            _row.ri = _ri_aux;
-            listaCuadradoMedio.push(_row);
+          _row.i = _i_aux;
+          _row.xi = _xi_aux;
+          _row.xi2 = _xi2_aux;
+          _row.xi2medio = _xi2medio_aux;
+          _row.ri = _ri_aux;
+          listaCuadradoMedio.push(_row);
 
-            _i += 1;
+          _i += 1;
         }
       };
 
       $scope.ejecutarCongruencial = function () {
-        //Tomando el primer número
-        listaCongruencial = [];
-        var _row_ini = {};
-
+        var _row_ini = {},
         //Generando los números aleatorios
-        var _i = 0,
+            _i = 0,
             _xo = $scope.generador.xo,
             _axoc = ($scope.generador.a * _xo) + $scope.generador.c,
             _axocm = _axoc % $scope.generador.m,
             _d_axocm = _axocm,
-            _axocmm = parseFloat((_d_axocm / $scope.generador.m) + "");
+            _axocmm = parseFloat((_d_axocm / $scope.generador.m) + '');
+
+        //Tomando el primer número
+        listaCongruencial = [];
 
         _row_ini.i = (_i);
         _row_ini.xo = (_xo);
@@ -157,15 +153,13 @@
         listaCongruencial.push(_row_ini);
 
         while (listaCongruencial.length < $scope.generador.n) {
-          var _row = {};
-
-          _i += 1;
-          var _i_aux = _i,
+          var _i_aux = ++_i,
               _xo_aux = _axocm,
               _axoc_aux = ($scope.generador.a * _xo_aux) + $scope.generador.c,
               _axocm_aux = _axoc_aux % $scope.generador.m,
               _d_axocm_aux = _axocm_aux,
-              _axocmm_aux = parseFloat((_d_axocm_aux / $scope.generador.m) + "");
+              _axocmm_aux = parseFloat((_d_axocm_aux / $scope.generador.m) + ''),
+              _row = {};
 
           //Guardando la nueva variable aleatoria
           _row.i = (_i_aux);

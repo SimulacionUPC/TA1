@@ -11,7 +11,7 @@
       'ngRoute',
       'ngSanitize',
       'doc.features',
-      'ui.bootstrap',
+      'ui.bootstrap'
     ]);
   angular.module('doc.features', []);
   angular.module('documentarioApp')
