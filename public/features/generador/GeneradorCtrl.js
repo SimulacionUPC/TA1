@@ -69,7 +69,7 @@
             return txt_recortado;
           };
 
-      angular.noop(uiGridConstants, listaCongruencial);
+      angular.noop(i18nService, uiGridConstants, listaCongruencial);
 
       $scope.generador = {
         metodo: '',
@@ -86,7 +86,9 @@
       $scope.result = [];
 
       $scope.generar = function () {
-        if ($scope.generador.n) {
+        $scope.generador.nombre = '';
+
+        if ($scope.generador.n && $scope.generador.d && $scope.generador.d <= 20) {
           if ($scope.generador.metodo === '1' &&
               $scope.generador.a &&
               $scope.generador.c &&

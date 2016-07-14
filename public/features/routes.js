@@ -6,6 +6,10 @@
         .when('/', {
           templateUrl: 'features/generador/index.html',
           controller: 'GeneradorCtrl'
+        })
+        .when('/pruebas', {
+          templateUrl: 'features/pruebas/pruebas.html',
+          controller: 'PruebasCtrl'
         });
     }]);
 })();

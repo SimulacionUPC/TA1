@@ -9,3 +9,11 @@
   margin: 5px;
   z-index: 9999;
 }
+.randomtable {
+  border: 1px solid black;
+}
+.randomtable th,
+.randomtable td {
+  padding: 0 10px;
+  border: 1px solid black;
+}

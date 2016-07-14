@@ -4,13 +4,6 @@ var bodyParser = require('body-parser'),
     db = require('./server/core/database.js')
     app = express();
 
-/*function onRequest(request, response) {
-    console.log("Request made" + request.url);
-    response.writeHead(200, {"Context-Type": "text/plain"});
-    response.write("Data");
-    response.end();
-}*/
-
 // config file
 require('./server/core/config.js')(app, express, bodyParser);
 // Show the main html in the app
@@ -27,18 +20,34 @@ app.get('/', function (req, res, next) {
 
 app.get('/Generador/', function (req, res, next) {
   console.log("HOLAAA GET");
-  res.json({result: "GET"});
-});
 
-app.get('/Generador/:id', function (req, res, next) {
-  console.log("HOLAAA GET:id");
-  db.query('SELECT * FROM NUMEROS WHERE IDCONJUNTO = ?;', req.params.id, function (err, rows) {
+  db.query('SELECT * FROM CONJUNTO', req.params.id, function (err, rows) {
     if (err) {
       console.log(err);
       res.status(500).send({code: 500, msg: 'Internal Server Error', dev: err});
       return;
     } else {
-      res.json(rows[0]);
+      res.json({response:rows});
+    }
+  });
+});
+
+app.get('/Generador/:id', function (req, res, next) {
+  console.log("HOLAAA GET:id");
+  console.log(req.params.id);
+  db.query('SELECT NUMERO num FROM NUMEROS WHERE IDCONJUNTO = ?;', req.params.id, function (err, rows) {
+    if (err) {
+      console.log(err);
+      res.status(500).send({code: 500, msg: 'Internal Server Error', dev: err});
+      return;
+    } else {
+      var numeros = [];
+      if (rows && rows.length) {
+        rows.forEach(function (item) {
+          numeros.push(item.num);
+        });
+      }
+      res.json({response: numeros});
     }
   });
 });
@@ -81,8 +90,8 @@ app.post('/Generador/', function (req, res, next) {
   });
 });
 
-app.listen(1234, function () {
-  console.log('Public server  running at port 1234');
-  console.log('http://localhost:1234');
+app.listen(1235, function () {
+  console.log('Public server  running at port 1235');
+  console.log('http://localhost:1235');
   console.log('\tAT:' + new Date());
 });
