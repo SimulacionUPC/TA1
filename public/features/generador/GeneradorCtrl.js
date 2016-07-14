@@ -1,9 +1,8 @@
 (function () {
   'use strict';
   angular.module('doc.features')
-  .controller('GeneradorCtrl', ['$scope', '$uibModal', '$window',
-    'i18nService', 'uiGridConstants', 'Generador',
-    function ($scope, $uibModal, $window, i18nService, uiGridConstants, Generador) {
+  .controller('GeneradorCtrl', ['$scope', 'Generador',
+    function ($scope, Generador) {
       var listaCongruencial = [],
           listaCuadradoMedio = [],
           recorte = function (_xi2, izq_der, d) {
@@ -68,8 +67,6 @@
 
             return txt_recortado;
           };
-
-      angular.noop(i18nService, uiGridConstants, listaCongruencial);
 
       $scope.generador = {
         metodo: '',

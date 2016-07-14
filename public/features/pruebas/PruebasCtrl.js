@@ -1,10 +1,8 @@
 (function () {
   'use strict';
   angular.module('doc.features')
-  .controller('PruebasCtrl', ['$scope', '$uibModal', '$window',
-    'i18nService', 'uiGridConstants', 'Generador',
-    function ($scope, $uibModal, $window, i18nService, uiGridConstants, Generador) {
-      angular.noop(uiGridConstants);
+  .controller('PruebasCtrl', ['$scope', 'Generador',
+    function ($scope, Generador) {
       $scope.set = Generador.get();
 
       $scope.prueba = {
@@ -52,7 +50,7 @@
             case '1':
               $scope.prueba.chi2.max = Math.max(...$scope.numeros);
               $scope.prueba.chi2.min = Math.min(...$scope.numeros);
-              $scope.prueba.chi2.recorrido = $scope.prueba.chi2.max - $scope.prueba.chi2.min;
+              $scope.prueba.chi2.recorrido = ($scope.prueba.chi2.max - $scope.prueba.chi2.min).toFixed(4);
               break;
           }
         }
@@ -74,7 +72,7 @@
             }
 
             if ($scope.prueba.chi2.intervalos) {
-              $scope.prueba.chi2.longIntervalo = $scope.prueba.chi2.recorrido / $scope.prueba.chi2.intervalos;
+              $scope.prueba.chi2.longIntervalo = ($scope.prueba.chi2.recorrido / $scope.prueba.chi2.intervalos).toFixed(4);
               $scope.numerosOrdenados = $scope.numeros.sort();
               $scope.resultado = [];
 
@@ -95,9 +93,9 @@
 
               $scope.sumchi2 = $scope.resultado.reduce(function (a, b) {
                 return {chi2: a.chi2 + b.chi2};
-              }).chi2;
+              }).chi2.toFixed(4);
 
-              $scope.valorCritico = jStat.chisquare.inv((1 - $scope.prueba.significancia / 100), $scope.prueba.chi2.n - 1);
+              $scope.valorCritico = (jStat.chisquare.inv((1 - $scope.prueba.significancia / 100), $scope.prueba.chi2.n - 1)).toFixed(4);
 
               $scope.textoResultado = 'Solución: Los números aleatorios presentados ' +
                 (($scope.sumchi2 < $scope.valorCritico) ? '' : 'no ') +
@@ -124,10 +122,10 @@
 
             $scope.dmas = Math.max(...$scope.resultado.map(function (item) {
               return item.inri;
-            }));
+            })).toFixed(4);
             $scope.dmenos = Math.max(...$scope.resultado.map(function (item) {
               return item.riiin;
-            }));
+            })).toFixed(4);
             $scope.dc = Math.max($scope.dmas, $scope.dmenos);
             $scope.valorCritico = kolsmi.DoKolIQ($scope.prueba.kolsmi.n, $scope.prueba.significancia / 100);
 

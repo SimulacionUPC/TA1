@@ -7,19 +7,11 @@
     .module('documentarioApp', [
       'ngAnimate',
       'ngCookies',
-      'ngFileUpload',
       'ngResource',
       'ngRoute',
       'ngSanitize',
-      'adaptv.adaptStrap',
-      'mgcrea.ngStrap',
       'doc.features',
-      'ui.select',
       'ui.bootstrap',
-      'ui.grid',
-      'ui.grid.pagination',
-      'ui.grid.resizeColumns',
-      'ui.grid.autoResize'
     ]);
   angular.module('doc.features', []);
   angular.module('documentarioApp')
@@ -27,8 +19,8 @@
    * Decorate $resource so we can add in common functionality.
    */
     .config(['$provide', function ($provide) {
-      $provide.decorator('$resource', ['$delegate', 'notification',
-        function ($delegate, notification) {
+      $provide.decorator('$resource', ['$delegate',
+        function ($delegate) {
           /**
            * Angular tries to extend the top level default action configuration with resource verb objcts.
            * https://github.com/angular/angular.js/blob/master/src/ngResource/resource.js#L548
@@ -58,15 +50,6 @@
                    * Default to orca.genericErrorHandler if not specified.
                    */
                   verb.interceptor = verb.interceptor || {};
-                  /**
-                   * Check explicitly for undefined.
-                   * This allows us to set responseError to null in a model to avoid having
-                   * an assigned error handler.
-                   *
-                   */
-                  if (verb.interceptor.responseError === undefined) {
-                    verb.interceptor.responseError = notification.genericErrorHandler;
-                  }
                 });
 
                 return $delegate(url, paramDefaults, verbs);

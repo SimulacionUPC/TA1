@@ -24,7 +24,8 @@ angular.module('mgcrea.ngStrap.select', ['mgcrea.ngStrap.tooltip', 'mgcrea.ngStr
       noneText: 'None',
       maxLength: 3,
       maxLengthHtml: 'selected',
-      iconCheckmark: 'glyphicon glyphicon-ok'
+      iconCheckmark: 'glyphicon glyphicon-ok',
+      toggle: false
     };
 
     this.$get = function ($window, $document, $rootScope, $tooltip, $timeout) {
@@ -113,6 +114,7 @@ angular.module('mgcrea.ngStrap.select', ['mgcrea.ngStrap.tooltip', 'mgcrea.ngStr
         };
 
         $select.select = function (index) {
+          if (angular.isUndefined(index) || index < 0 || index >= scope.$matches.length) { return; }
           var value = scope.$matches[index].value;
           scope.$apply(function () {
             $select.activate(index);
@@ -124,13 +126,20 @@ angular.module('mgcrea.ngStrap.select', ['mgcrea.ngStrap.tooltip', 'mgcrea.ngStr
                 return scope.$matches[index].value;
               }));
             } else {
-              controller.$setViewValue(value);
+              if (options.toggle) {
+                controller.$setViewValue((value === controller.$modelValue) ? undefined : value);
+              } else {
+                controller.$setViewValue(value);
+              }
               // Hide if single select
               $select.hide();
             }
           });
           // Emit event
           scope.$emit(options.prefixEvent + '.select', value, index, $select);
+          if (angular.isDefined(options.onSelect) && angular.isFunction(options.onSelect)) {
+            options.onSelect(value, index, $select);
+          }
         };
 
         // Protected methods
@@ -280,7 +289,7 @@ angular.module('mgcrea.ngStrap.select', ['mgcrea.ngStrap.tooltip', 'mgcrea.ngStr
 
         // Directive options
         var options = {scope: scope, placeholder: defaults.placeholder};
-        angular.forEach(['template', 'templateUrl', 'controller', 'controllerAs', 'placement', 'container', 'delay', 'trigger', 'keyboard', 'html', 'animation', 'placeholder', 'allNoneButtons', 'maxLength', 'maxLengthHtml', 'allText', 'noneText', 'iconCheckmark', 'autoClose', 'id', 'sort', 'caretHtml', 'prefixClass', 'prefixEvent'], function (key) {
+        angular.forEach(['template', 'templateUrl', 'controller', 'controllerAs', 'placement', 'container', 'delay', 'trigger', 'keyboard', 'html', 'animation', 'placeholder', 'allNoneButtons', 'maxLength', 'maxLengthHtml', 'allText', 'noneText', 'iconCheckmark', 'autoClose', 'id', 'sort', 'caretHtml', 'prefixClass', 'prefixEvent', 'toggle'], function (key) {
           if (angular.isDefined(attr[key])) options[key] = attr[key];
         });
 
@@ -289,6 +298,14 @@ angular.module('mgcrea.ngStrap.select', ['mgcrea.ngStrap.tooltip', 'mgcrea.ngStr
         angular.forEach(['html', 'container', 'allNoneButtons', 'sort'], function (key) {
           if (angular.isDefined(attr[key]) && falseValueRegExp.test(attr[key])) {
             options[key] = false;
+          }
+        });
+
+        // bind functions from the attrs to the show, hide and select events
+        angular.forEach(['onBeforeShow', 'onShow', 'onBeforeHide', 'onHide', 'onSelect'], function (key) {
+          var bsKey = 'bs' + key.charAt(0).toUpperCase() + key.slice(1);
+          if (angular.isDefined(attr[bsKey])) {
+            options[key] = scope.$eval(attr[bsKey]);
           }
         });
 
