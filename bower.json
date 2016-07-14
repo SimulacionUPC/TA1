@@ -3,7 +3,7 @@
   "description": "",
   "main": "",
   "authors": [
-    "luis mori <lmori@belatrixsf.com>"
+    "Marco Vergaray <mvergaray@belatrixsf.com>"
   ],
   "license": "ISC",
   "moduleType": [],
@@ -25,11 +25,7 @@
     "angular-cookies": "^1.5.5",
     "angular-route": "^1.5.5",
     "angular-animate": "^1.5.5",
-    "angular-ui-grid": "^3.1.1",
-    "angular-bootstrap": "^1.3.2",
-    "bootstrap-datepicker": "^1.6.1",
-    "ng-file-upload": "^12.0.4",
-    "angular-ui-select": "^0.17.1"
+    "angular-bootstrap": "^1.3.2"
   },
   "resolutions": {
     "bootstrap": "^3.3.6",
