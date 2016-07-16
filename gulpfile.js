@@ -10,26 +10,8 @@ var gulp = require('gulp'),
         'public/features/**/*.js',
         'server/*.js',
         'server/**/*.js'
-      ],
-      styles: [
-        './public/*.less'
       ]
     };
-
-
-gulp.task('lint', function () {
-  return gulp.src(paths.scripts)
-      .pipe(eslint())
-      .pipe(eslint.formatEach());
-});
-
-gulp.task('less', function () {
-  return gulp.src(paths.styles)
-    .pipe(less({
-      paths: [ path.join(__dirname, 'less', 'includes') ]
-    }))
-    .pipe(gulp.dest('./public/'));
-});
 
 gulp.task('nodemon', function () {
   nodemon({
@@ -40,4 +22,4 @@ gulp.task('nodemon', function () {
 })
 
 // The default task (called when you run `gulp` from cli)
-gulp.task('server', ['less', 'lint', 'nodemon']);
+gulp.task('server', ['nodemon']);
