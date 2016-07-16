@@ -1,6 +1,4 @@
 var gulp = require('gulp'),
-    eslint = require('gulp-eslint'),
-    less = require('gulp-less'),
     nodemon = require('gulp-nodemon'),
     path = require('path'),
     paths = {
