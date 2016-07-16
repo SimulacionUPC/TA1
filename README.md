@@ -7,9 +7,10 @@
 
 3 - Correr script de base de datos ubicado en la ruta /db_script/generador.sql
 
-4 - Instalar bower globalmente
+4 - Instalar bower globalmente 
+    (desde este punto, ejecutar los comandos en consola desde la carpeta raíz del proyecto):
 
-    npm install -g bower
+    $npm install -g bower
 
 5 - Instalar gulp globalmente
 
