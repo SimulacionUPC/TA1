@@ -185,9 +185,14 @@
           $scope.set.numeros = $scope.result.map(function (a) {
             return ($scope.generador.metodo == 1) ? a.axocmm : a.ri;
           });
-          $scope.set.$save(function () {
-            console.log("HOLA");
-          });
+
+          if ($scope.set.nombre) {
+            $scope.set.$save(function () {
+              alert("Conjunto guardado.");
+            });
+          } else {
+            alert("Ingrese un nombre para el conjunto.");
+          }
         }
       };
     }]);

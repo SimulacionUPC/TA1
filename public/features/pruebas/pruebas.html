@@ -38,8 +38,7 @@
                                     <label class="col-sm-2 control-label">Método</label>
                                     <div class="col-sm-5">
                                         <select class="form-control"
-                                                ng-model="prueba.metodo"
-                                                ng-change="seleccionarMetodo()">
+                                                ng-model="prueba.metodo">
                                             <option value="">Seleccione una prueba.</option>
                                             <option value="1">Uniformidad: Chi2</option>
                                             <option value="2">Uniformidad: Kolmogrov</option>
@@ -89,6 +88,7 @@
                                     <label class="col-sm-2 control-label">% de Significancia (del 0% - 100%):</label>
                                     <div class="col-sm-5">
                                         <input type="number"
+                                               step="any"
                                                ng-model="prueba.significancia">
                                     </div>
                                 </div>
@@ -100,28 +100,142 @@
                             <br/></br/>
                             <div class="col-md-12"
                                  ng-show="!!resultado.length">
-                                <div class="col-md-12" ng-show="prueba.metodo == 1">N = {{prueba.chi2.n}}</div>
-                                <div class="col-md-12" ng-show="prueba.metodo == 2">N = {{prueba.kolsmi.n}}</div>
-                                <div class="col-md-12" ng-show="prueba.metodo == 3">N = {{prueba.racha.n}}</div>
-                                <div class="col-md-12" ng-show="prueba.metodo == 3">Cant. Rachas Co = {{prueba.racha.rachas}}</div>
-                                <div class="col-md-12" ng-show="prueba.metodo == 4">N = {{prueba.rachamed.n}}</div>
-                                <div class="col-md-12" ng-show="prueba.metodo == 4">N0 = {{prueba.rachamed.n0}}</div>
-                                <div class="col-md-12" ng-show="prueba.metodo == 4">N1 = {{prueba.rachamed.n1}}</div>
-                                <div class="col-md-12" ng-show="prueba.metodo == 4">Cant. Rachas Co = {{prueba.rachamed.rachas}}</div>
-                                <div class="col-md-12" ng-show="['3','4'].indexOf(prueba.metodo) > -1">UCo = {{uco}}</div>
-                                <div class="col-md-12" ng-show="['3','4'].indexOf(prueba.metodo) > -1">S2Co = {{s2co}}</div>
-                                <div class="col-md-12" ng-show="['3','4'].indexOf(prueba.metodo) > -1">Zo = {{zo}}</div>
-                                <div class="col-md-12" ng-show="['3','4'].indexOf(prueba.metodo) > -1">Z = {{z}}</div>
-                                <div class="col-md-12" ng-show="prueba.metodo == 1">Máx = {{prueba.chi2.max}}</div>
-                                <div class="col-md-12" ng-show="prueba.metodo == 1">Min = {{prueba.chi2.min}}</div>
-                                <div class="col-md-12" ng-show="prueba.metodo == 1">Recorrido = {{prueba.chi2.recorrido}}</div>
-                                <div class="col-md-12" ng-show="prueba.metodo == 2">D+ = {{dmas}}</div>
-                                <div class="col-md-12" ng-show="prueba.metodo == 2">D- = {{dmenos}}</div>
-                                <div class="col-md-12" ng-show="prueba.metodo == 2">Dc = {{dc}}</div>
-                                <div class="col-md-12" ng-show="prueba.metodo == 1">Intervalos = {{prueba.chi2.intervalos}}</div>
-                                <div class="col-md-12" ng-show="prueba.metodo == 1">Longitud Intervalos = {{prueba.chi2.longIntervalo}}</div>
-                                <div class="col-md-12" ng-show="prueba.metodo == 1">Chi2 = {{sumchi2}}</div>
-                                <div class="col-md-12" ng-show="['1','2'].indexOf(prueba.metodo) > -1">Valor Crítico = {{valorCritico}}</div>
+                                <div class="col-md-12" ng-show="mostrarTabla == 1">N = {{prueba.chi2.n}}</div>
+                                <div class="col-md-12" ng-show="mostrarTabla == 2">N = {{prueba.kolsmi.n}}</div>
+                                <div class="col-md-12" ng-show="mostrarTabla == 3">N = {{prueba.racha.n}}</div>
+                                <div class="col-md-12" ng-show="mostrarTabla == 3">Cant. Rachas Co = {{prueba.racha.rachas}}</div>
+                                <div class="col-md-12" ng-show="mostrarTabla == 4">N = {{prueba.rachamed.n}}</div>
+                                <div class="col-md-12" ng-show="mostrarTabla == 4">N0 = {{prueba.rachamed.n0}}</div>
+                                <div class="col-md-12" ng-show="mostrarTabla == 4">N1 = {{prueba.rachamed.n1}}</div>
+                                <div class="col-md-12" ng-show="mostrarTabla == 4">Cant. Rachas Co = {{prueba.rachamed.rachas}}</div>
+                                <div class="col-md-12" ng-show="mostrarTabla == 1">Máx = {{prueba.chi2.max}}</div>
+                                <div class="col-md-12" ng-show="mostrarTabla == 1">Min = {{prueba.chi2.min}}</div>
+                                <div class="col-md-12" ng-show="mostrarTabla == 1">Recorrido = {{prueba.chi2.recorrido}}</div>
+                                <div class="col-md-12" ng-show="mostrarTabla == 1">Intervalos = {{prueba.chi2.intervalos}}</div>
+                                <div class="col-md-12" ng-show="mostrarTabla == 1">Longitud Intervalos = {{prueba.chi2.longIntervalo.toPrecision(4)}}</div>
+                            </div>
+                            <br/></br/>
+                            <div class="col-md-11 col-md-offset-1"
+                                 ng-show="!!resultado.length">
+                                <table class="randomtable"
+                                       ng-show="mostrarTabla == 1">
+                                    <thead>
+                                        <tr>
+                                            <th>i</th>
+                                            <th>Li</th>
+                                            <th>Ls</th>
+                                            <th>Foi</th>
+                                            <th>Fei</th>
+                                            <th>(Fei - Foi)^2/Fei</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr ng-repeat="item in resultado">
+                                            <td>
+                                                {{item.i}}
+                                            </td>
+                                            <td>
+                                                {{item.li.toPrecision(4)}}
+                                            </td>
+                                            <td>
+                                                {{item.ls.toPrecision(4)}}
+                                            </td>
+                                            <td>
+                                                {{item.fo}}
+                                            </td>
+                                            <td>
+                                                {{item.fe.toPrecision(4)}}
+                                            </td>
+                                            <td>
+                                                {{item.chi2.toPrecision(4)}}
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                            </td>
+                                            <td>
+                                            </td>
+                                            <td>
+                                            </td>
+                                            <td>
+                                                {{prueba.chi2.n}}
+                                            </td>
+                                            <td>
+                                                {{prueba.chi2.n}}
+                                            </td>
+                                            <td>
+                                                {{sumchi2.toPrecision(4)}}
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+
+                                <table class="randomtable"
+                                       ng-show="mostrarTabla == 2">
+                                    <thead>
+                                        <tr>
+                                            <th>i</th>
+                                            <th>Ri</th>
+                                            <th>i/n - Ri</th>
+                                            <th>Ri - (i-1)/n</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr ng-repeat="item in resultado">
+                                            <td>
+                                                {{item.i}}
+                                            </td>
+                                            <td>
+                                                {{item.ri.toPrecision(4)}}
+                                            </td>
+                                            <td>
+                                                {{item.inri.toPrecision(4)}}
+                                            </td>
+                                            <td>
+                                                {{item.riiin.toPrecision(4)}}
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                            </td>
+                                            <td>
+                                            </td>
+                                            <td>
+                                                D+
+                                            </td>
+                                            <td>
+                                                D-
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <div ng-show="['3', '4'].indexOf(mostrarTabla) > -1">
+                                    <br/>
+                                    <div ng-repeat="item in resultado">
+                                        <div class="col-md-1 randomtable">
+                                            <div>
+                                                {{item.bandera}}
+                                            </div>
+                                            <div>
+                                                {{item.numero}}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <br/>
+                                </div>
+                            </div>
+                            <div class="col-md-12"
+                                 ng-show="!!resultado.length">
+                                <div class="col-md-12" ng-show="mostrarTabla == 1">Chi2 = {{sumchi2.toPrecision(4)}}</div>
+                                <div class="col-md-12" ng-show="mostrarTabla == 1">Tabla Xi^2(&alpha;;n-1) = {{valorCritico.toPrecision(4)}}</div>
+                                <div class="col-md-12" ng-show="mostrarTabla == 2">D+ = {{dmas}}</div>
+                                <div class="col-md-12" ng-show="mostrarTabla == 2">D- = {{dmenos}}</div>
+                                <div class="col-md-12" ng-show="mostrarTabla == 2">Dc = {{dc}}</div>
+                                <div class="col-md-12" ng-show="['3','4'].indexOf(mostrarTabla) > -1">UCo = {{uco.toPrecision(4)}}</div>
+                                <div class="col-md-12" ng-show="['3','4'].indexOf(mostrarTabla) > -1">S2Co = {{s2co.toPrecision(4)}}</div>
+                                <div class="col-md-12" ng-show="['3','4'].indexOf(mostrarTabla) > -1">Zo = {{zo.toPrecision(4)}}</div>
+                                <div class="col-md-12" ng-show="['3','4'].indexOf(mostrarTabla) > -1">Z(1 - (&alpha;/2)) = {{z.toPrecision(4)}}</div>
+                                <div class="col-md-12" ng-show="mostrarTabla == 2">Valor Crítico = {{valorCritico.toPrecision(4)}}</div>
                                 <div class="col-md-12">{{textoResultado}}</div>
                             </div>
                         </div>

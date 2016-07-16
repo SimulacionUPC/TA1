@@ -19,8 +19,6 @@ app.get('/', function (req, res, next) {
 });
 
 app.get('/Generador/', function (req, res, next) {
-  console.log("HOLAAA GET");
-
   db.query('SELECT * FROM CONJUNTO', req.params.id, function (err, rows) {
     if (err) {
       console.log(err);
@@ -33,8 +31,6 @@ app.get('/Generador/', function (req, res, next) {
 });
 
 app.get('/Generador/:id', function (req, res, next) {
-  console.log("HOLAAA GET:id");
-  console.log(req.params.id);
   db.query('SELECT NUMERO num FROM NUMEROS WHERE IDCONJUNTO = ?;', req.params.id, function (err, rows) {
     if (err) {
       console.log(err);
@@ -53,9 +49,6 @@ app.get('/Generador/:id', function (req, res, next) {
 });
 
 app.post('/Generador/', function (req, res, next) {
-  console.log(req.body.nombre);
-  console.log(req.body.numeros);
-  console.log("HOLAAA POST");
   var conjunto = {
       nombre: req.body.nombre
     };
@@ -74,8 +67,6 @@ app.post('/Generador/', function (req, res, next) {
         conjunto_numeros.push(temp);
       });
 
-      console.log("A guardar en 'NUMEROS':");
-      console.log(conjunto_numeros);
       db.query('INSERT INTO NUMEROS (IDCONJUNTO, NUMERO) VALUES ?;', [conjunto_numeros], function (err, result) {
         if (err) {
           console.log(err);
