@@ -5,6 +5,7 @@
     function ($scope, Generador) {
       $scope.set = Generador.get();
 
+      // Objeto de pruebas
       $scope.prueba = {
         metodo: null,
         significancia: 0,
@@ -32,8 +33,8 @@
         }
       };
 
+      // Indica qué tabla se debe mostrar
       $scope.mostrarTabla = 0;
-
       $scope.resultado = [];
       $scope.numeros = [];
       $scope.numerosOrdenados = [];
@@ -50,9 +51,11 @@
         var i,
             row;
 
-        switch ($scope.prueba.metodo) {
+        switch ($scope.prueba.metodo) {
+          // Realizar Prueba Chi cuadrado
           case '1':
             $scope.prueba.chi2.n = $scope.numeros.length;
+            // Obtener # Intervalos según el método seleccionado
             if ($scope.prueba.chi2.metodoIntervalo == 1) {
               $scope.prueba.chi2.intervalos = Math.round(1 + 3.3 * Math.log10($scope.prueba.chi2.n));
             } else if ($scope.prueba.chi2.metodoIntervalo == 2) {
@@ -61,7 +64,9 @@
               $scope.prueba.chi2.intervalos = Math.round($scope.prueba.chi2.tempIntervalos);
             }
 
+            // Realizar prueba solo si el # de Intervalos es diferente de cero
             if ($scope.prueba.chi2.intervalos) {
+              // Obtener lista ordenada
               $scope.numerosOrdenados = angular.copy($scope.numeros).sort();
               $scope.prueba.chi2.max = Math.max(...$scope.numerosOrdenados);
               $scope.prueba.chi2.min = Math.min(...$scope.numerosOrdenados);
@@ -69,9 +74,9 @@
 
               $scope.mostrarTabla = $scope.prueba.metodo;
               $scope.prueba.chi2.longIntervalo = +($scope.prueba.chi2.recorrido / $scope.prueba.chi2.intervalos);
-              
               $scope.resultado = [];
 
+              // Obtener valores según el número de intervalos
               for (i = 0; i < $scope.prueba.chi2.intervalos; i++) {
                 row = {};
 
@@ -81,7 +86,7 @@
                 row.fo = $scope.numerosOrdenados.filter(function (n) {
                   var decimales = decimalPlaces(n);
 
-                  return (n >= row.li.toPrecision(decimales) && n <= row.ls.toPrecision(decimales));
+                  return (n > row.li.toPrecision(decimales) && n <= row.ls.toPrecision(decimales));
                 }).length;
                 row.fe = $scope.prueba.chi2.n / $scope.prueba.chi2.intervalos;
                 row.chi2 = (Math.pow(row.fo - row.fe, 2))/row.fe;
@@ -89,12 +94,17 @@
                 $scope.resultado.push(row);
               }
 
+              // Obtener suma de todos los Chi cuadrado de cada fila
               $scope.sumchi2 = $scope.resultado.reduce(function (a, b) {
                 return {chi2: a.chi2 + b.chi2};
               }).chi2;
 
+              // Obtener el valor Chi cuadrado de la tabla
+              // La librería espera un valor inverso de 'alfa'
+              // Por ejemplo, si alfa = 0.1, se deberá enviar 0.9
               $scope.valorCritico = jStat.chisquare.inv(1 - ($scope.prueba.significancia / 100), $scope.prueba.chi2.intervalos - 1);
 
+              // Muestra resultado comparando la Sumatoria de Chi2 con Chi2 de la tabla
               $scope.textoResultado = 'Solución: Los números aleatorios presentados ' +
                 (($scope.sumchi2 < $scope.valorCritico) ? '' : 'no ') +
                 'provienen de una población uniforme estandar para un nivel de significancia del ' +
@@ -103,12 +113,15 @@
               alert("Ingresar número de intervalos.");
             }
             break;
+          // Realizar Prueba Kolmogorov - Smirnov
           case '2':
             $scope.mostrarTabla = $scope.prueba.metodo;
             $scope.prueba.kolsmi.n = $scope.numeros.length;
+            // Obtener lista ordenada
             $scope.numerosOrdenados = angular.copy($scope.numeros).sort();
             $scope.resultado = [];
 
+            // Obtener valores según la cantidad de números aleatorios
             for (i = 0; i < $scope.prueba.kolsmi.n; i++) {
               row = {};
 
@@ -121,13 +134,20 @@
               $scope.resultado.push(row);
             }
 
+            // Obtener D+ como el valor máximo de la columna (i/N - Ri)
             $scope.dmas = Math.max(...$scope.resultado.map(function (item) {
               return item.inri;
             })).toFixed(4);
+
+            // Obtener D- como el valor máximo de la columna (Ri - (i - 1)/n)
             $scope.dmenos = Math.max(...$scope.resultado.map(function (item) {
               return item.riiin;
             })).toFixed(4);
+
+            // Obtener Dc como el valor máximo entre D+ y D-
             $scope.dc = Math.max($scope.dmas, $scope.dmenos);
+
+            // Obtener D de la tabla
             $scope.valorCritico = +kolsmi.DoKolIQ($scope.prueba.kolsmi.n, $scope.prueba.significancia / 100);
 
             $scope.textoResultado = 'Solución: Los números aleatorios presentados ' +
@@ -135,6 +155,7 @@
               'provienen de una población uniforme estandar para un nivel de significancia del ' +
               $scope.prueba.significancia +' %';
             break;
+          // Realizar Prueba de rachas
           case '3':
             var previo = false,
                 gaussianInstance = gaussian(0, 1);
@@ -146,21 +167,27 @@
 
             $scope.numeros.forEach(function (item, i) {
               if (i < $scope.numeros.length -1) {
+                // Guardar cada número con una bandera que indique si el número es
+                // menor o mayor al número que sigue
                 $scope.resultado.push({
                   numero: item,
                   bandera: +(item < $scope.numeros[i + 1])
                 });
+                // Para el primer elementom crear una primera racha sin necesidad de evaluar
                 if (!i) {
                   $scope.prueba.racha.rachas++;
                   previo = item < $scope.numeros[i + 1];
+                // Evalúa si el número es menor al siguiente y si debe o no crear una nueva racha
                 } else if (item < $scope.numeros[i + 1] && !previo) {
                   $scope.prueba.racha.rachas++;
                   previo = true;
+                // Evalúa si el número es mayor al siguiente y si debe o no crear una nueva racha
                 } else if (item > $scope.numeros[i + 1] && !!previo) {
                   $scope.prueba.racha.rachas++;
                   previo = false;
                 }
               } else {
+                // Guardar el último número sin bandera
                 $scope.resultado.push({
                   numero: item,
                   bandera: "-"
@@ -168,17 +195,18 @@
               }
             });
 
-            // TODO: CONSULTAR SI S 2 O 12
             $scope.uco = (2 * $scope.prueba.racha.n - 1) / 3;
             $scope.s2co = (16 * $scope.prueba.racha.n - 19) / 90;
-            // TODO: CONSULTAR SI ES / RAIZ(s2co) o / s2co
             $scope.zo = ($scope.prueba.racha.rachas - $scope.uco) / Math.sqrt($scope.s2co);
+
+            // Calcular valor de Normal de la tabla
             $scope.z = gaussianInstance.ppf(1 - ($scope.prueba.significancia / 100) / 2);
             $scope.textoResultado = 'Solución: Los números aleatorios presentados ' +
               (($scope.zo <= $scope.z && $scope.zo >= -$scope.z) ? '' : 'no ') +
               'provienen de una población aleatoria estandar para un nivel de significancia del ' +
               $scope.prueba.significancia +' %';
             break;
+          // Realizar Prueba de rachas sobre y bajo la media
           case '4':
             var previo = false,
                 gaussianInstance = gaussian(0, 1);
@@ -224,6 +252,8 @@
               (2 * $scope.prueba.rachamed.n0 * $scope.prueba.rachamed.n1 - $scope.prueba.rachamed.n)) /
               (Math.pow($scope.prueba.rachamed.n, 2) * ($scope.prueba.rachamed.n - 1));
             $scope.zo = ($scope.prueba.rachamed.rachas - $scope.uco) / $scope.s2co;
+
+            // Calcular valor de Normal de la tabla
             $scope.z = gaussianInstance.ppf(1 - ($scope.prueba.significancia / 100) / 2);
             $scope.textoResultado = 'Solución: Los números aleatorios presentados ' +
               (($scope.zo <= $scope.z && $scope.zo >= -$scope.z) ? '' : 'no ') +
@@ -233,6 +263,7 @@
           }
       };
 
+      // Obtener la cantidad decimales de un número
       function decimalPlaces(num) {
         var match = (''+num).match(/(?:\.(\d+))?(?:[eE]([+-]?\d+))?$/);
         if (!match) { return 0; }

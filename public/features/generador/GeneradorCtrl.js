@@ -64,6 +64,7 @@
             return txt_recortado;
           };
 
+      // Objeto generador
       $scope.generador = {
         metodo: '',
         a: 0,
@@ -75,27 +76,31 @@
         eliminar: '1',
         nombre: ''
       };
-
       $scope.result = [];
+      $scope.mostrarTabla = "";
 
       $scope.generar = function () {
         $scope.generador.nombre = '';
 
-        if ($scope.generador.n && $scope.generador.d && $scope.generador.d <= 20) {
+        if ($scope.generador.d && $scope.generador.d <= 20) {
           if ($scope.generador.metodo === '1' &&
               $scope.generador.a &&
               $scope.generador.c &&
               $scope.generador.m &&
               $scope.generador.xo &&
               $scope.generador.d) {
-            $scope.ejecutarCongruencial()
+            $scope.ejecutarCongruencial();
             $scope.result = listaCongruencial;
+            $scope.mostrarTabla = $scope.generador.metodo;
           } else if ($scope.generador.metodo === '2' &&
               $scope.generador.xo &&
               $scope.generador.d) {
             $scope.ejecutarCuadradoMedio();
             $scope.result = listaCuadradoMedio;
+            $scope.mostrarTabla = $scope.generador.metodo;
           }
+        } else {
+          alert("d Debe ser un número entre 1 y 20.");
         }
       };
 
@@ -105,9 +110,11 @@
         var _row_ini = {},
             pow = Math.pow(10, $scope.generador.d),
             //Generando los números aleatorios
-            _i = 0;
+            _i = 0,
+            listaMedios = [],
+            continuar = true;
 
-        while (listaCuadradoMedio.length < $scope.generador.n) {
+        while (continuar) {
           var _row = {},
               _i_aux = _i,
               _xi_aux = _i ? listaCuadradoMedio[_i-1].xi2medio : $scope.generador.xo,
@@ -126,10 +133,19 @@
           _row.xi2 = _xi2_aux;
           _row.xi2medio = _xi2medio_aux;
           _row.ri = _ri_aux;
-          listaCuadradoMedio.push(_row);
+
+          if (listaMedios.indexOf(_row.xi2medio) === -1) {
+            listaMedios.push(_row.xi2medio);
+            listaCuadradoMedio.push(_row);
+          } else {
+            continuar = false;
+          }
 
           _i += 1;
         }
+
+        // Obtener longitud de variables
+        $scope.generador.n = listaCuadradoMedio.length;
       };
 
       $scope.ejecutarCongruencial = function () {
@@ -140,7 +156,9 @@
             _axoc = ($scope.generador.a * _xo) + $scope.generador.c,
             _axocm = _axoc % $scope.generador.m,
             _d_axocm = _axocm,
-            _axocmm = parseFloat((_d_axocm / $scope.generador.m) + '');
+            _axocmm = parseFloat((_d_axocm / $scope.generador.m) + ''),
+            listaResiduo = [],
+            continuar = true;
 
         //Tomando el primer número
         listaCongruencial = [];
@@ -149,10 +167,11 @@
         _row_ini.xo = (_xo);
         _row_ini.axoc = (_axoc);
         _row_ini.axocm = (_axocm);
-        _row_ini.axocmm = (_axocmm).toFixed($scope.generador.d);
+        _row_ini.axocmm = +(_axocmm).toFixed($scope.generador.d);
+        listaResiduo.push(_row_ini.axocm);
         listaCongruencial.push(_row_ini);
 
-        while (listaCongruencial.length < $scope.generador.n) {
+        while (continuar) {
           var _i_aux = ++_i,
               _xo_aux = _axocm,
               _axoc_aux = ($scope.generador.a * _xo_aux) + $scope.generador.c,
@@ -166,8 +185,13 @@
           _row.xo = (_xo_aux);
           _row.axoc = (_axoc_aux);
           _row.axocm = (_axocm_aux);
-          _row.axocmm = (_axocmm_aux).toFixed($scope.generador.d);
-          listaCongruencial.push(_row);
+          _row.axocmm = +(_axocmm_aux).toFixed($scope.generador.d);
+          if (listaResiduo.indexOf(_row.axocm) === -1) {
+            listaResiduo.push(_row.axocm);
+            listaCongruencial.push(_row);
+          } else {
+            continuar = false;
+          }
 
           //Configurando los valores
           _i = _i_aux;
@@ -176,6 +200,9 @@
           _axocm = _axocm_aux;
           _axocmm = _axocmm_aux;
         }
+
+        // Obtener longitud de variables
+        $scope.generador.n = listaCongruencial.length;
       };
 
       $scope.guardar = function () {
