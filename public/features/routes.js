@@ -10,6 +10,10 @@
         .when('/pruebas', {
           templateUrl: 'features/pruebas/pruebas.html',
           controller: 'PruebasCtrl'
+        })
+        .when('/bondad', {
+          templateUrl: 'features/bondad/bondad.html',
+          controller: 'BondadCtrl'
         });
     }]);
 })();

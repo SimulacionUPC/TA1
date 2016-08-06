@@ -1,0 +1,255 @@
+<section class="content row">
+    <div class="col-md-12">
+        <div class="box">
+            <div class="box-header with-border">
+                <h3>Pruebas de Bondad de Ajuste</h3>
+            </div>
+            <div class="box-body">
+                <form class="form-horizontal">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <div id="drop">Arrastra aquí el archivo excel. El nombre de la cabecera deberá ser 'muestra'</div>
+                            </div>
+                        </div>
+                        {{datos.nombre}}
+                        <div ng-show="datos.numeros && !!datos.numeros.length">
+                            <div class="col-md-12">
+                                 <div class="form-group">
+                                    <label class="col-sm-2 control-label">Datos históricos:</label>
+                                    <div class="col-sm-10">
+                                        {{datos.numeros.join(", ")}}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <label>
+                                    <input type="radio"
+                                           ng-model="prueba.chi2.metodoIntervalo"
+                                           value="1"/>
+                                    Sturges
+                                <label>
+                                <label>
+                                    <input type="radio"
+                                           ng-model="prueba.chi2.metodoIntervalo"
+                                           value="2"/>
+                                    Raiz(N)
+                                <label>
+                                <label>
+                                    <input type="radio"
+                                           ng-model="prueba.chi2.metodoIntervalo"
+                                           value="3"/>
+                                    Investigador
+                                <label>
+                            </div>
+                            <div class="col-md-12"
+                                 ng-show="prueba.chi2.metodoIntervalo == 3">
+                                 <div class="form-group">
+                                    <label class="col-sm-2 control-label">Ingresar Intervalos:</label>
+                                    <div class="col-sm-5">
+                                        <input type="number"
+                                               ng-model="prueba.chi2.tempIntervalos">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                 <div class="form-group">
+                                    <label class="col-sm-2 control-label">% de Significancia (del 0% - 100%):</label>
+                                    <div class="col-sm-5">
+                                        <input type="number"
+                                               step="any"
+                                               ng-model="prueba.significancia">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <button type="submit" class="btn btn-info pull-right" ng-click="probar()">Probar</button>
+                            </div>
+                            <br/></br/>
+                            <div class="col-md-12"
+                                 ng-show="!!resultado.length">
+                                <div class="col-md-12" ng-show="mostrarTabla">N = {{prueba.chi2.n}}</div>
+                                <div class="col-md-12" ng-show="mostrarTabla">Máx = {{prueba.chi2.max}}</div>
+                                <div class="col-md-12" ng-show="mostrarTabla">Min = {{prueba.chi2.min}}</div>
+                                <div class="col-md-12" ng-show="mostrarTabla">Recorrido = {{prueba.chi2.recorrido}}</div>
+                                <div class="col-md-12" ng-show="mostrarTabla">Intervalos = {{prueba.chi2.intervalos}}</div>
+                                <div class="col-md-12" ng-show="mostrarTabla">Longitud Intervalos = {{prueba.chi2.longIntervalo.toPrecision(4)}}</div>
+                                <div class="col-md-12" ng-show="mostrarTabla">&mu; = {{prueba.chi2.mean}}</div>
+                                <div class="col-md-12" ng-show="mostrarTabla">&sigma; = {{prueba.chi2.std}}</div>
+                            </div>
+                            <br/></br/>
+                            <div class="col-md-11 col-md-offset-1"
+                                 ng-show="!!resultado.length">
+                                <table class="randomtable">
+                                    <thead>
+                                        <tr>
+                                            <th>i</th>
+                                            <th>Li</th>
+                                            <th>Ls</th>
+                                            <th>Foi</th>
+                                            <th>Pi</th>
+                                            <th>Fei</th>
+                                            <th ng-if="!reagrupar.length">(Fei - Foi)^2/Fei</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr ng-repeat="item in resultado">
+                                            <td>
+                                                {{item.i}}
+                                            </td>
+                                            <td>
+                                                {{item.li.toPrecision(4)}}
+                                            </td>
+                                            <td>
+                                                {{item.ls.toPrecision(4)}}
+                                            </td>
+                                            <td>
+                                                {{item.fo}}
+                                            </td>
+                                            <td>
+                                                {{item.pi.toPrecision(4)}}
+                                            </td>
+                                            <td>
+                                                {{item.fe.toPrecision(4)}}
+                                            </td>
+                                            <td ng-if="!reagrupar.length">
+                                                {{item.chi2.toPrecision(4)}}
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                            </td>
+                                            <td>
+                                            </td>
+                                            <td>
+                                            </td>
+                                            <td>
+                                                {{prueba.chi2.n}}
+                                            </td>
+                                            <td>
+                                                {{prueba.chi2.spi}}
+                                            </td>
+                                            <td>
+                                                {{prueba.chi2.sfe}}
+                                            </td>
+                                            <td ng-if="!reagrupar.length">
+                                                {{sumchi2.toPrecision(4)}}
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <br/>
+                            <div class="col-md-11 col-md-offset-1">
+                                <div id="firstChart"></div>
+                            </div>
+                            </br/>
+                            <div class="col-md-11 col-md-offset-1"
+                                 ng-show="!!reagrupar.length">
+                                <table class="randomtable">
+                                    <thead>
+                                        <tr>
+                                            <th>i</th>
+                                            <th>Li</th>
+                                            <th>Ls</th>
+                                            <th>Foi</th>
+                                            <th>Fei</th>
+                                            <th>(Fei - Foi)^2/Fei</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr ng-repeat="item in reagrupado">
+                                            <td>
+                                                {{$index + 1}}
+                                            </td>
+                                            <td>
+                                                {{item.li.toPrecision(4)}}
+                                            </td>
+                                            <td>
+                                                {{item.ls.toPrecision(4)}}
+                                            </td>
+                                            <td>
+                                                {{item.fo}}
+                                            </td>
+                                            <td>
+                                                {{item.fe.toPrecision(4)}}
+                                            </td>
+                                            <td>
+                                                {{item.chi2.toPrecision(4)}}
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                            </td>
+                                            <td>
+                                            </td>
+                                            <td>
+                                            </td>
+                                            <td>
+                                                {{prueba.chi2.n}}
+                                            </td>
+                                            <td>
+                                                {{prueba.chi2.sfe}}
+                                            </td>
+                                            <td>
+                                                {{sumchi2.toPrecision(4)}}
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <br/>
+                            <div class="col-md-11 col-md-offset-1">
+                                <div id="secondChart"></div>
+                            </div>
+                            </br/>
+                            <div class="col-md-11 col-md-offset-1">
+                                <div class="col-md-12" ng-show="mostrarTabla">Chi2 = {{sumchi2.toPrecision(4)}}</div>
+                                <div class="col-md-12" ng-show="mostrarTabla">Tabla Xi^2(&alpha;;n-1) = {{valorCritico.toPrecision(4)}}</div>
+                                <div class="col-md-12">{{textoResultado}}</div>
+                            </div>
+
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+#drop{
+    border:2px dashed #bbb;
+    -moz-border-radius:5px;
+    -webkit-border-radius:5px;
+    border-radius:5px;
+    padding:25px;
+    text-align:center;
+    width: 90% !important;
+    margin-left: 20px !important;
+}
+</style>
+<div style="display:none;">
+<select name="format">
+<option value="csv" selected> CSV</option>
+<option value="json"> JSON</option>
+<option value="form"> FORMULAE</option>
+</select><br />
+<p><input type="file" name="xlfile" id="xlf"/></p>
+<textarea id="b64data"></textarea>
+<input type="button" id="dotext"  onclick="b64it();"/><br/>
+<input type="checkbox" name="useworker" checked><br/>
+<input type="checkbox" name="xferable" checked><br/>
+<input type="checkbox" name="userabs" checked><br/>
+</div>
+<script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-36810333-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+</script>
